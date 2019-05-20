@@ -27,11 +27,11 @@ if (!DRIVER_NAME) {
 }
 
 gulp.task('watch', function() {
-  gulp.watch(['./component/*.js', './component/*.hbs', './component/*.css'], gulp.series(['build']));
+  gulp.watch(['./component/*.js', './component/*.hbs', './component/*.css', './assets/*'], gulp.series(['build']));
 });
 
 gulp.task('clean', function() {
-  return gulp.src([`${DIST}*.js`, `${DIST}*.css`, `${DIST}*.hbs`, `${TMP}*.js`, `${TMP}*.css`, `${TMP}*.hbs`,], {read: false})
+  return gulp.src([`${DIST}*.js`, `${DIST}*.css`, `${DIST}*.hbs`, `${DIST}*.yaml`, `${TMP}*.js`, `${TMP}*.css`, `${TMP}*.hbs`, `${TMP}*.yaml`], {read: false})
   .pipe(clean());
 });
 
@@ -72,10 +72,16 @@ gulp.task('babel', gulp.series(['assets'], function() {
 
   hbs = Buffer.from(hbs).toString('base64');
 
+  let enUS = fs.readFileSync(`${ASSETS}en-us.yaml`, 'utf-8');
+  enUS = replaceString(enUS, NAME_TOKEN, DRIVER_NAME);
+  enUS = Buffer.from(enUS).toString('base64');
+  let translations = {"en-us": enUS};
+
   return gulp.src([
     `${BASE}component.js`
   ])
     .pipe(replace('const LAYOUT;', `const LAYOUT = "${ hbs }";`))
+    .pipe(replace('const INTL;', `const INTL = ${ JSON.stringify(translations) };`))
     .pipe(replace(NAME_TOKEN, DRIVER_NAME)) 
     .pipe(babel(opts))
     .pipe(gulpConcat(`component.js`,{newLine: ';\n'}))
@@ -132,9 +138,5 @@ gulp.task('server', gulp.parallel(['build', 'watch'], function() {
     https: process.env.HTTPS || false,
   });
 }));
-
-gulp.task('watch', function() {
-  gulp.watch(['./component/*.js', './component/*.hbs', './component/*.css'], gulp.series(['build']));
-});
 
 gulp.task('default', gulp.series(['build']));

@@ -1,0 +1,41 @@
+nodeDriver:
+  linode:
+    instance:
+      title: Instance Options
+      detail: Configure the options for the Instances that will be created by this template.
+    sizeLabel: |
+      {highMem, select, true {High Memory: } other {}}{memoryGb} GB RAM, {disk} GB Disk, {vcpus, plural,
+        =1 {# vCPU}
+        other {# vCPUs}
+      }
+    authAccountButton: 'Next: Configure Instance'
+    accessToken:
+      label: Access Token
+      placeholder: Your linode API access token
+      help: |
+        Paste in a Personal Access Token from the linode
+        <a href="https://cloud.linode.com/settings/api/tokens" target="_blank" rel="nofollow noreferrer noopener">Applications & API</a> screen
+    image:
+      label: Image
+    sshUser:
+      label: SSH User
+      placeholder: 'e.g. root'
+    size:
+      label: Instance Size
+    region:
+      label: Region
+    optionsSection: Options
+    backups:
+      label: Enable Snapshots
+    ipv6:
+      label: Enable IPv6
+    privateNetworking:
+      label: Enable Private Networking
+    monitoring:
+      label: Enable Monitoring
+    tags:
+      addActionLabel: Add Instance Tag
+      valueLabel: Tags
+      placeholder: e.g. dev
+    errors:
+      hostnamePrefix: '"Name Prefix" can not contain "_"'

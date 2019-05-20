@@ -4,6 +4,7 @@ import NodeDriver, { DynamicDependentKeysProperty, registerDisplayLocation, regi
 // do not remove LAYOUT, it is replaced at build time with a base64 representation of the template of the hbs template
 // we do this to avoid converting template to a js file that returns a string and the cors issues that would come along with that
 const LAYOUT;
+const TRANSLATIONS;
 /*!!!!!!!!!!!DO NOT CHANGE END!!!!!!!!!!!*/
 
 registerDisplayLocation(new DynamicDependentKeysProperty({ driver: '%%DRIVERNAME%%', keyOrKeysToWatch: 'config.region' }));
@@ -34,12 +35,15 @@ intl: service(),
 init() {
   // This does on the fly template compiling, if you mess with this :cry:
   const decodedLayout = window.atob(LAYOUT);
+  const intl = get(this, 'intl');
   const template = Ember.HTMLBars.compile(decodedLayout, {
     moduleName: 'nodes/components/driver-%%DRIVERNAME%%/template'
   });
 
   set(this, 'layout', template);
-
+  for (var lang in TRANSLATIONS) {
+    intl.addTranslations(lang, TRANSLATIONS[lang]);
+  }
   this._super(...arguments);
 
 },
